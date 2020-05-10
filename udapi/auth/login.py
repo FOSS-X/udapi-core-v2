@@ -1,3 +1,10 @@
+# 
+#   login.py
+#   Start of login.py
+#
+#   Created by FOSS-X UDAPI Desgin Team on 7/05/20.
+#   Copyright © 2020 FOSS-X. All rights reserved.
+#   
 
 from flask import Flask, jsonify, request
 import mysql.connector
@@ -7,9 +14,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
-import os
 
+import os
 SECRET_KEY = os.environ.get("SECRET_KEY")
+
 from flask import Blueprint
 mod = Blueprint('login', __name__)
 
