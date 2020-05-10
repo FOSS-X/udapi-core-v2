@@ -19,6 +19,7 @@ from .util import *
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'FOSS-X-udapi'
+app.config.from_pyfile('config.py')
 
 from udapi.auth.register import mod
 from udapi.auth.login import mod
@@ -46,5 +47,5 @@ app.register_blueprint(mongodb.entitySet.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.entity.mod, url_prefix='/mongodb')
 
 @app.route('/', methods=['GET', 'POST'])
-def index(username):
-    return "hello World 2020"
+def index():
+    return "Welcome to UDAPI 2020!!"

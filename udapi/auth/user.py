@@ -15,6 +15,7 @@ import jwt
 import datetime
 from functools import wraps
 from ..util import *
+import os
 
 
 from flask import Blueprint
@@ -23,6 +24,7 @@ mod = Blueprint('user', __name__)
 # Delete an entity for the entitySetName 
 @mod.route('/user', methods=['DELETE'])
 @token_required
+@admin`
 def delete_mysql_entities(username): 
     try:
         cnx = mysql.connector.connect(
@@ -48,3 +50,9 @@ def delete_mysql_entities(username):
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
+
+
+@mod.route('/secret_key', methods=['GET'])
+def get_secret_key():
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    return SECRET_KEY
