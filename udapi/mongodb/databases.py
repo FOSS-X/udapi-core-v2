@@ -6,15 +6,14 @@
 #   Copyright © 2020 FOSS-X. All rights reserved.
 #   
 
-from flask import Flask, jsonify, request
-import mysql.connector
-from mysql.connector import errorcode
-from functools import wraps
+from flask import Flask, jsonify, request,Blueprint
+from .mongoUtils import *
 from ..util import *
+import pymongo
 
-from flask import Blueprint
+
 mod = Blueprint('databasesMongodb', __name__)
-
+client = pymongo.MongoClient()
 
 @mod.route('/databases', methods=['GET'])
 @token_required
@@ -42,3 +41,30 @@ def get_mysql_db(username):
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
+
+@mod.route('/databases/', methods=['POST'])
+@token_required
+def createDatabase(username):
+    configData = request.get_json()
+    databaseName = configData['databaseName']
+    processedDBName = getDBName(username, databaseName)
+    if dbExists(databaseName, processedDBName):
+        raise duplicateResource(
+            f"Database '{databaseName}' already exists.")
+    print('creating Db', processedDBName)
+    print(processedDBName)
+    client[processedDBName]
+    addToConfig(username,databaseName,processedDBName)
+    return jsonify({'code': 200, 'message': f"Database '{databaseName}' created successfully", "success": 1})
+
+@mod.route('/databases/<databaseName>', methods=['DELETE'])
+@token_required
+def deleteDB(username,databaseName):
+    storedDB=getDBName(username,databaseName)
+    if not dbExists(databaseName, storedDB):
+        raise notFound(f"Unknown database '{databaseName}'.")
+    removeFromConfig(username,databaseName, storedDB)
+    client.drop_database(storedDB)
+    return jsonify({'code': 200, 'message': f"Database {databaseName} deleted successfully", "success": 1})
+
+

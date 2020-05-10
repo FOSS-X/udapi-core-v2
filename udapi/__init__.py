@@ -41,10 +41,12 @@ app.register_blueprint(mysql.entity.mod, url_prefix='/mysql')
 from udapi.mongodb.databases import mod
 from udapi.mongodb.entitySet import mod
 from udapi.mongodb.entity import mod
+from udapi.mongodb.error_handlers import mod
 app.register_blueprint(mongodb.databases.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.entitySet.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.entity.mod, url_prefix='/mongodb')
+app.register_blueprint(mongodb.error_handlers.mod)
 
 @app.route('/', methods=['GET', 'POST'])
-def index(username):
+def index():
     return "hello World 2020"
