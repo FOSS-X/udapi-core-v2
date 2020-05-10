@@ -39,7 +39,11 @@ app.register_blueprint(mysql.entitySet.mod, url_prefix='/mysql')
 app.register_blueprint(mysql.entity.mod, url_prefix='/mysql')
 
 from udapi.mongodb.databases import mod
+from udapi.mongodb.entitySet import mod
+from udapi.mongodb.entity import mod
 app.register_blueprint(mongodb.databases.mod, url_prefix='/mongodb')
+app.register_blueprint(mongodb.entitySet.mod, url_prefix='/mongodb')
+app.register_blueprint(mongodb.entity.mod, url_prefix='/mongodb')
 
 @app.route('/', methods=['GET', 'POST'])
 def index(username):
