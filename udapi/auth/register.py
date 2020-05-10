@@ -1,3 +1,11 @@
+# 
+#   register.py
+#   Start of register.py
+#
+#   Created by FOSS-X UDAPI Desgin Team on 7/05/20.
+#   Copyright © 2020 FOSS-X. All rights reserved.
+#   
+
 from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import errorcode
