@@ -42,6 +42,7 @@ def register():
                 mycursor.execute(sql)
                 sql = """CREATE TABLE `udapiDB`.`users` (
                         `id` INT NOT NULL AUTO_INCREMENT,
+                        `admin` INT NOT NULL DEFAULT 0,
                         `email` VARCHAR(45) NOT NULL,
                         `username` VARCHAR(45) NOT NULL,
                         `password` VARCHAR(256) NOT NULL,
@@ -80,6 +81,8 @@ def register():
         sql = "DROP USER IF EXISTS '" + username + "'@'localhost';"
         mycursor.execute(sql)
         sql = "create user " + username + "@localhost identified by '" + hashed_password + "'"
+        mycursor.execute(sql)
+        sql = "grant all privileges on *.* to '" + username + "'@'localhost';"
         mycursor.execute(sql)
 
     except mysql.connector.Error as err:
