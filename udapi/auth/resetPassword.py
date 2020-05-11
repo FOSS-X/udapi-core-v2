@@ -12,6 +12,7 @@ from mysql.connector import errorcode
 from mysql.connector import FieldType
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from ..util_mysql import *
 
 
 from flask import Blueprint
@@ -27,12 +28,7 @@ def reset_password():
     hashed_password = generate_password_hash(new_password, method='sha256')
 
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=databaseName
-        )
+        cnx = connectSQLServerDB('root', 'password', databaseName)
         mycursor = cnx.cursor()
         sql = "SELECT * FROM udapiDB.users WHERE email='" + email + "';"
         mycursor.execute(sql)
