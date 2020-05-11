@@ -55,7 +55,7 @@ def register():
                         `username` VARCHAR(45) NOT NULL,
                         `databaseName` VARCHAR(45) NOT NULL,
                         `databaseType` VARCHAR(45) NOT NULL,
-                        PRIMARY KEY (`username`, `databaseName`));
+                        PRIMARY KEY (`username`, `databaseName`, `databaseType`));
                     """
                 mycursor.execute(sql)
             else:
@@ -64,7 +64,7 @@ def register():
 
     # Inserting user data in the user table of udapi DB
     email = request.json['email']
-    username = request.json['username']
+    username = request.json['username'].lower()
     password = request.json['password']
     hashed_password = generate_password_hash(password, method='sha256')
     try:
