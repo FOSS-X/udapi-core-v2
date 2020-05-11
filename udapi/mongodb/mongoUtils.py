@@ -52,7 +52,7 @@ def addToConfig(username,databaseName,storedDB):
     configDB = apiConfig['config']
     print(storedDB)
     configDB.insert_one({'username':username,'databaseName':storedDB})
-    update_configs_add(username,databaseName,"mongoDB")
+    update_configs_add(username,databaseName,"mongodb")
 
 def removeFromConfig(username,databaseName,storedDB):
     configDB = apiConfig['config']
