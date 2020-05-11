@@ -14,6 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
+from ..util_mysql import *
 
 import os
 SECRET_KEY = str(os.environ.get("SECRET_KEY"))
@@ -30,12 +31,7 @@ def login():
 
     # Find if user exists in the user table of udapi DB
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=databaseName
-        )
+        cnx = connectSQLServerDB('root', 'password', databaseName)
         mycursor = cnx.cursor()
         sql = "SELECT * FROM udapiDB.users WHERE username='" + username + "';"
         mycursor.execute(sql)
