@@ -46,7 +46,7 @@ def login():
             data.append(dict(zip(attributes, entity)))
         cnx.close()
     except mysql.connector.Error as err:
-        return jsonify(success=0, error_code=err.errno, message=err.msg)
+        return jsonify(success=0, error_code=err.errno, message=err.msg), 401
 
     # Username doesn't exists
     if not data:
@@ -56,4 +56,4 @@ def login():
         token = jwt.encode({'username' : username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=200)}, SECRET_KEY)
         return jsonify({'jwtToken' : token.decode('UTF-8')})
 
-    return jsonify(success=0, error_code=401, message="Invalid password.")
+    return jsonify(success=0, error_code=401, message="Invalid password."), 401
