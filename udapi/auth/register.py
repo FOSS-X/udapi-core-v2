@@ -60,13 +60,24 @@ def register():
                 mycursor.execute(sql)
             else:
                 cnx.close()
-                return jsonify(ErrorCode=err.errno, ErrorDesc=err.msg)
+                return jsonify(ErrorCode=err.errno, ErrorDesc=err.msg), 401
 
-    # Inserting user data in the user table of udapi DB
+    
     email = request.json['email']
     username = request.json['username'].lower()
-    password = request.json['password']
+    password = request.json['password'].strip()
+    confirm_password = request.json['confirm_password'].strip()
     hashed_password = generate_password_hash(password, method='sha256')
+
+    # Validate password to have atleast 1 letter
+    if not password:
+        return jsonify(success=0, error_code=7001, message="Password can't be empty"), 401
+
+    # Check if passwords are equal
+    if password != confirm_password:
+        return jsonify(success=0, error_code=7002, message="Password and Confirm Password doesn't match."), 401
+
+    # Inserting user data in the user table of udapi DB
     try:
         mycursor = cnx.cursor()
         sql = "INSERT INTO `udapiDB`.`users` (`email`, `username`, `password`) VALUES ('" + email + "', '" + username + "', '" + hashed_password +"');"
@@ -74,7 +85,7 @@ def register():
         cnx.commit()
     except mysql.connector.Error as err:
         cnx.close()
-        return jsonify(success=0, error_code=err.errno, message=err.msg)
+        return jsonify(success=0, error_code=err.errno, message=err.msg), 401
 
     # Creating user for mysql connections with username and password
     try:
@@ -84,10 +95,9 @@ def register():
         mycursor.execute(sql)
         sql = "grant all privileges on *.* to '" + username + "'@'localhost';"
         mycursor.execute(sql)
-
     except mysql.connector.Error as err:
         cnx.close()
-        return jsonify(success=0, error_code=err.errno, message=err.msg)
+        return jsonify(success=0, error_code=err.errno, message=err.msg), 401
     
     cnx.close()
     return jsonify(success=1, message= email + " successfully registered as " + username + "!")
