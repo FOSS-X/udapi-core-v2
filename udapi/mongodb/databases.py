@@ -9,6 +9,7 @@
 from flask import Flask, jsonify, request,Blueprint
 from ..util_mongodb import *
 from ..util import *
+from ..util_mysql import * 
 import pymongo
 
 
@@ -21,12 +22,7 @@ def get_mysql_db(username):
     """ List all the databases of databaseType = mongodb """
     databaseType = 'mongodb'
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database='udapiDB'
-        )
+        cnx = connectSQLServerDB('root', 'password', 'udapiDB')
         mycursor = cnx.cursor()
         sql = "SELECT * FROM udapiDB.configs WHERE (username='" + username + "') AND (databaseType='" + databaseType + "');"
         mycursor.execute(sql)
@@ -37,7 +33,7 @@ def get_mysql_db(username):
         for entity in entities:
             results.append(entity[1])
         cnx.close()
-        return jsonify(success=1, databases=results)
+        return jsonify(success=1, mongodb=results)
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
