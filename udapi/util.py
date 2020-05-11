@@ -16,7 +16,7 @@ import datetime
 from functools import wraps
 
 import os
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = str(os.environ.get("SECRET_KEY"))
 
 def token_required(f):
     @wraps(f)
@@ -27,11 +27,11 @@ def token_required(f):
             token = request.headers['jwtToken']
 
         if not token:
-            return jsonify(success=0, error_code=401, message="JWT Token is missing!")
+            return jsonify(success=0, error_code=401, message="JWT Token is missing!"), 401
         try:
             jwtData = jwt.decode(token, SECRET_KEY)
         except:
-            return jsonify(success=0, error_code=401, message="JWT Token is invalid.")
+            return jsonify(success=0, error_code=401, message="JWT Token is invalid."), 401
 
         try:
             cnx = mysql.connector.connect(
@@ -51,7 +51,7 @@ def token_required(f):
             cnx.close()
             
             if not data:
-                return jsonify(success=0, error_code=401, message="JWT Token is invalid.")
+                return jsonify(success=0, error_code=401, message="JWT Token is invalid."), 401
 
         except mysql.connector.Error as err:
             return jsonify(success=0, error_code=err.errno, message=err.msg)
@@ -98,7 +98,11 @@ def admin(f):
         except mysql.connector.Error as err:
             return jsonify(success=0, error_code=err.errno, message=err.msg)
 
-        return f(data[0], *args, **kwargs)
+        if not data[0]['admin']:
+            return jsonify(success=0, error_code=401, message="You don't have permissions.")
+
+        return f(jwtData['username'], *args, **kwargs)
+    
 
     return decorated
 
