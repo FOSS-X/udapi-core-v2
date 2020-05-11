@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request,Blueprint
 mod = Blueprint('entitySetMongodb', __name__)
 from bson.json_util import dumps, loads
 from ..util import *
-from .mongoUtils import *
+from ..util_mongodb import *
 
 @mod.route('/databases/<databaseName>/', methods=['GET'])
 @token_required
