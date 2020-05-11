@@ -7,7 +7,7 @@
 #   
 
 from flask import Flask, jsonify, request,Blueprint
-from .mongoUtils import *
+from ..util_mongodb import *
 from ..util import *
 import pymongo
 
@@ -51,8 +51,6 @@ def createDatabase(username):
     if dbExists(databaseName, processedDBName):
         raise duplicateResource(
             f"Database '{databaseName}' already exists.")
-    print('creating Db', processedDBName)
-    print(processedDBName)
     client[processedDBName]
     addToConfig(username,databaseName,processedDBName)
     return jsonify({'code': 200, 'message': f"Database '{databaseName}' created successfully", "success": 1})
