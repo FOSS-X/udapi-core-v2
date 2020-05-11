@@ -11,9 +11,7 @@ import mysql.connector
 from mysql.connector import errorcode
 from mysql.connector import FieldType
 from werkzeug.security import generate_password_hash, check_password_hash
-import jwt
-import datetime
-from functools import wraps
+from ..util_mysql import *
 
 from flask import Blueprint
 mod = Blueprint('register', __name__)
@@ -24,19 +22,10 @@ def register():
     # Create udapi DB with user table for storing users information
     databaseName = 'udapiDB'
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=databaseName
-        )
+        cnx = connectSQLServerDB('root', 'password', databaseName)
     except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_DB_ERROR:
-                cnx = mysql.connector.connect(
-                    host="localhost",
-                    user="root",
-                    passwd="password",
-                )
+                cnx = connectSQLServer('root', 'password')
                 mycursor = cnx.cursor()
                 sql = "CREATE DATABASE " + databaseName
                 mycursor.execute(sql)
