@@ -15,6 +15,7 @@ import jwt
 import datetime
 from functools import wraps
 from ..util import *
+from ..util_mysql import *
 
 from flask import Blueprint
 mod = Blueprint('entitySetMysql', __name__)
@@ -27,12 +28,7 @@ def get_mysql_entitySets(username, databaseName):
     """ View all the enity sets in the databaseName """
     password = get_password(username)
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "USE " + username + "_" + databaseName + ";"
         mycursor.execute(sql)
@@ -75,12 +71,7 @@ def create_mysql_entitySet(username, databaseName):
     sql += "));"
 
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         mycursor.execute(sql)
         cnx.close()
@@ -99,12 +90,7 @@ def rename_mysql_entitySet(username, databaseName, entitySetName):
     newEntitySetName = request.json["newEntitySetName"]
 
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "ALTER TABLE " + entitySetName + " RENAME " + newEntitySetName + ";"
         mycursor.execute(sql)
@@ -121,12 +107,7 @@ def delete_mysql_entitySetName(username, databaseName, entitySetName):
     """ Delete an Entity Set. """
     password = get_password(username)
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "DROP TABLE " + entitySetName + ";"
         mycursor.execute(sql)
