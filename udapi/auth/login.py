@@ -16,7 +16,7 @@ import datetime
 from functools import wraps
 
 import os
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = str(os.environ.get("SECRET_KEY"))
 
 from flask import Blueprint
 mod = Blueprint('login', __name__)
@@ -24,7 +24,7 @@ mod = Blueprint('login', __name__)
 
 @mod.route('/login', methods=['POST'])
 def login():
-    username = request.json['username']
+    username = request.json['username'].lower()
     password = request.json['password']
     databaseName = 'udapiDB'
 
