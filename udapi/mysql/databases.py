@@ -9,12 +9,12 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import errorcode
-from mysql.connector import FieldType
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
 from ..util import *
+from ..util_mysql import *
 
 from flask import Blueprint
 mod = Blueprint('databasesMysql', __name__)
@@ -26,23 +26,17 @@ def get_mysql_db(username):
     """ List all the databases of databaseType = mysql """
     databaseType = 'mysql'
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database='udapiDB'
-        )
+        cnx = connectSQLServerDB('root', 'password', 'udapiDB')
         mycursor = cnx.cursor()
         sql = "SELECT * FROM udapiDB.configs WHERE (username='" + username + "') AND (databaseType='" + databaseType + "');"
         mycursor.execute(sql)
         entities = mycursor.fetchall()
         attributes = [desc[0] for desc in mycursor.description]
-        fieldType = [FieldType.get_info(desc[1]) for desc in mycursor.description]  # Debug code
         results = []
         for entity in entities:
             results.append(entity[1])
         cnx.close()
-        return jsonify(success=1, databases=results)
+        return jsonify(success=1, mysql=results)
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
@@ -56,22 +50,12 @@ def create_mysql_db(username):
     password = get_password(username)
 
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
-        cnx.close()
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         return jsonify(success=0, message="database Already Exists", error_code=401)
 
     except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_DB_ERROR:
-                cnx = mysql.connector.connect(
-                    host="localhost",
-                    user=username,
-                    passwd=password
-                )
+                cnx = connectSQLServer(username, password)
                 mycursor = cnx.cursor()
                 sql = "CREATE DATABASE " + username + "_" + databaseName + ";"
                 mycursor.execute(sql)
@@ -95,11 +79,7 @@ def rename_mysql_db(username, databaseName):
 def delete_mysql_db(username, databaseName):
     password = get_password(username)
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password
-        )
+        cnx = connectSQLServer(username, password)
         mycursor = cnx.cursor()
         sql = "DROP DATABASE " + username + "_" + databaseName + ";"
         mycursor.execute(sql)
