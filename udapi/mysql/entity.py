@@ -15,6 +15,7 @@ import jwt
 import datetime
 from functools import wraps
 from ..util import *
+from ..util_mysql import *
 
 from flask import Blueprint
 mod = Blueprint('entityMysql', __name__)
@@ -27,12 +28,7 @@ def get_mysql_entities(username, databaseName, entitySetName):
     """ View all the entites in the entitySetName  """
     password = get_password(username)
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user=username,
-            passwd=password,
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "SELECT * FROM " + entitySetName + ";"
         mycursor.execute(sql)
@@ -59,12 +55,7 @@ def create_mysql_entities(username, databaseName, entitySetName):
     entity = request.json['entity']
     
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "INSERT INTO " + entitySetName + " VALUES ('" 
         print(entity.values())
@@ -92,12 +83,7 @@ def edit_mysql_entities(username, databaseName, entitySetName, primeAttributeNam
     attributeValue = request.json['attributeValue']
     
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB('root', 'password', username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "UPDATE " + entitySetName + " SET " + attributeName + "='" + attributeValue 
         sql += "' WHERE " + primeAttributeName + "='" + primeAttributeValue + "';"
@@ -119,12 +105,7 @@ def delete_mysql_entities(username, databaseName, entitySetName, primeAttributeN
     primeAttributeValue = str(request.json['primeAttributeValue'])
     
     try:
-        cnx = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="password",
-            database=username + "_" + databaseName
-        )
+        cnx = connectSQLServerDB('root', 'password', username + "_" + databaseName)
         mycursor = cnx.cursor()
         sql = "DELETE FROM " + entitySetName + " WHERE " + primeAttributeName + "='" + primeAttributeValue + "';"
 
