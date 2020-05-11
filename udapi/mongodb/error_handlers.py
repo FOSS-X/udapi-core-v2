@@ -1,6 +1,6 @@
 from flask import Blueprint,jsonify
 from werkzeug.exceptions import HTTPException
-from .mongoUtils import *
+from ..util_mongodb import *
 
 mod = Blueprint('error_handlers','__name__')
 
