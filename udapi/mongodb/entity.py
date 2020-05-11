@@ -9,7 +9,7 @@
 from flask import Flask, jsonify, request,Blueprint
 from bson.json_util import dumps, loads
 from ..util import *
-from .mongoUtils import *
+from ..util_mongodb import *
 from bson.objectid import ObjectId
 mod = Blueprint('entityMongodb', __name__)
 
