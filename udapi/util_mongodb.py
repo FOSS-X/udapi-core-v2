@@ -55,7 +55,7 @@ def addToConfig(username,databaseName,storedDB):
     update_configs_add(username,databaseName,"mongodb")
 
 def removeFromConfig(username,databaseName,storedDB):
-    print(databaseName, storedDB)
+    print(storedDB)
     configDB = apiConfig['config']
-    configDB.find_one_and_delete({databaseName:storedDB})
+    configDB.find_one_and_delete({"databaseName":storedDB})
     update_configs_remove(username,databaseName)
