@@ -60,11 +60,13 @@ def reset_password():
     if check_password_hash(data[0]['password'], new_password):
         return jsonify(success=0, error_code=7003, message="Password can't be same as the previous one."), 401
     
-    # Update the password in users table
+    # Update the password in udapiDB.users and mysql users
     try:
         sql = "UPDATE users SET password='" + hashed_password + "' WHERE email='" + email + "';"
         mycursor.execute(sql)
         cnx.commit()
+        sql = "ALTER USER '" + data[0]['username'] + "'@'localhost' IDENTIFIED BY '" + hashed_password + "';"
+        mycursor.execute(sql)
         cnx.close()
         return jsonify(success=1, message="Password updated successfully.")
 
