@@ -6,15 +6,7 @@
 #   Copyright © 2020 FOSS-X. All rights reserved.
 #   
  
-from flask import Flask, jsonify, request
-import mysql.connector
-from mysql.connector import errorcode
-from mysql.connector import FieldType
-from werkzeug.security import generate_password_hash, check_password_hash
-import jwt
-import datetime
-from functools import wraps
-from .util import *
+from flask import Flask
 
 
 app = Flask(__name__)
@@ -23,14 +15,18 @@ app.config.from_pyfile('config.py')
 
 from udapi.auth.register import mod
 from udapi.auth.login import mod
+from udapi.auth.resetPassword import mod
 from udapi.auth.user import mod
 app.register_blueprint(auth.register.mod, url_prefix='/')
 app.register_blueprint(auth.login.mod, url_prefix='/')
+app.register_blueprint(auth.resetPassword.mod, url_prefix='/')
 app.register_blueprint(auth.user.mod, url_prefix='/')
 
 from udapi.allDatabases.databases import mod
 app.register_blueprint(allDatabases.databases.mod, url_prefix='/all')
 
+from udapi.handlers.errorHandlers import mod
+app.register_blueprint(handlers.errorHandlers.mod)
 
 from udapi.mysql.databases import mod
 from udapi.mysql.entitySet import mod
@@ -47,6 +43,8 @@ app.register_blueprint(mongodb.databases.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.entitySet.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.entity.mod, url_prefix='/mongodb')
 app.register_blueprint(mongodb.error_handlers.mod)
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
