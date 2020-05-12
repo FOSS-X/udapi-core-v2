@@ -13,7 +13,7 @@ from ..util_mongodb import *
 from bson.objectid import ObjectId
 mod = Blueprint('entityMongodb', __name__)
 
-@mod.route('/databases/<databaseName>/<entitySetName>/', methods=['GET'])
+@mod.route('/databases/<databaseName>/<entitySetName>', methods=['GET'])
 @token_required
 def viewAllEntities(username, databaseName, entitySetName):
     storedDB=getDBName(username,databaseName)
@@ -32,7 +32,7 @@ def viewAllEntities(username, databaseName, entitySetName):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/', methods=['POST'])
+@mod.route('/databases/<databaseName>/<entitySetName>', methods=['POST'])
 @token_required
 def createEntity(username, databaseName, entitySetName):
     storedDB=getDBName(username,databaseName)
@@ -49,7 +49,7 @@ def createEntity(username, databaseName, entitySetName):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>/', methods=['PUT'])
+@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>', methods=['PUT'])
 @token_required
 def updateEntityRecord(username, databaseName, entitySetName, primaryKey):
     storedDB=getDBName(username,databaseName)
@@ -70,7 +70,7 @@ def updateEntityRecord(username, databaseName, entitySetName, primaryKey):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>/', methods=['DELETE'])
+@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>', methods=['DELETE'])
 @token_required
 def deleteEntityRecord(username, databaseName, entitySetName, primaryKey):
     storedDB=getDBName(username,databaseName)
@@ -90,7 +90,7 @@ def deleteEntityRecord(username, databaseName, entitySetName, primaryKey):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>/', methods=['GET'])
+@mod.route('/databases/<databaseName>/<entitySetName>/<primaryKey>', methods=['GET'])
 @token_required
 def viewEntityRecord(username, databaseName, entitySetName, primaryKey):
     storedDB=getDBName(username,databaseName)
