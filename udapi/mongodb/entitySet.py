@@ -14,7 +14,7 @@ from bson.json_util import dumps, loads
 from ..util import *
 from ..util_mongodb import *
 
-@mod.route('/databases/<databaseName>/', methods=['GET'])
+@mod.route('/databases/<databaseName>', methods=['GET'])
 @token_required
 def viewEntitySets(username,databaseName):
     storedDB=getDBName(username,databaseName)
@@ -22,10 +22,10 @@ def viewEntitySets(username,databaseName):
         raise notFound(f"Unknown database {databaseName}.")
     db = client[storedDB]
     print(dumps(db.list_collection_names()))
-    return dumps({"message": db.list_collection_names(), "success": 1})
+    return jsonify(message=db.list_collection_names(), success=1)
 
 
-@mod.route('/databases/<databaseName>/', methods=['POST'])
+@mod.route('/databases/<databaseName>', methods=['POST'])
 @token_required
 def createEntitySet(username,databaseName):
     storedDB=getDBName(username,databaseName)
@@ -55,7 +55,7 @@ def createEntitySet(username,databaseName):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/', methods=['PUT'])
+@mod.route('/databases/<databaseName>/<entitySetName>', methods=['PUT'])
 @token_required
 def updateEntitySetName(username,databaseName,entitySetName):
     storedDB=getDBName(username,databaseName)
@@ -72,7 +72,7 @@ def updateEntitySetName(username,databaseName,entitySetName):
         raise notFound(f"Unknown database {databaseName}.")
 
 
-@mod.route('/databases/<databaseName>/<entitySetName>/', methods=['DELETE'])
+@mod.route('/databases/<databaseName>/<entitySetName>', methods=['DELETE'])
 @token_required
 def deleteEntitySet(username,databaseName, entitySetName):
     storedDB=getDBName(username,databaseName)
