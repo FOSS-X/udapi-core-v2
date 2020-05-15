@@ -21,8 +21,8 @@ def viewEntitySets(username,databaseName):
     if not dbExists(databaseName, storedDB):
         raise notFound(f"Unknown database {databaseName}.")
     db = client[storedDB]
-    print(dumps(db.list_collection_names()))
-    return jsonify(message=db.list_collection_names(), success=1)
+    # print(dumps(db.list_collection_names()))
+    return jsonify(entitySets=db.list_collection_names(), success=1)
 
 
 @mod.route('/databases/<databaseName>', methods=['POST'])
