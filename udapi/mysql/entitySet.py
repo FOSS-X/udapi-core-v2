@@ -51,7 +51,7 @@ def create_mysql_entitySet(username, databaseName):
     password = get_password(username)
     entitySetName = request.json['entitySetName']
     attributes = request.json['attributes']
-
+    addToSchema(request.get_json(),"mysql")
     pks = []
     sql = "CREATE TABLE " + username + "_" + databaseName + "." + entitySetName + " ("
     for attribute in attributes:
@@ -116,3 +116,11 @@ def delete_mysql_entitySetName(username, databaseName, entitySetName):
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
+
+@mod.route('/databases/<databaseName>/schema/<entitySetName>', methods=['GET'])
+def getSchema(databaseName, entitySetName):
+    client = pymongo.MongoClient()
+    apiConfig = client['api-config']
+    schemas=apiConfig['schemas']
+    outputSchema=schemas.find_one({'entitySetName':entitySetName,'databaseType':'mysql'},{'_id': False})
+    return jsonify(outputSchema)

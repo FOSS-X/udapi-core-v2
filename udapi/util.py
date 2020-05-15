@@ -14,6 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
+import pymongo
 
 import os
 SECRET_KEY = str(os.environ.get("SECRET_KEY"))
@@ -172,3 +173,17 @@ def update_configs_remove(username, databaseName):
     except mysql.connector.Error as err:
         cnx.close()
         return jsonify(success=0, error_code=err.errno, message=err.msg)
+
+def addToSchema(requestData,databaseType):
+    client = pymongo.MongoClient()
+    apiConfig = client['api-config']
+    schemas=apiConfig['schemas']
+    collectionSchema={}
+    collectionSchema["schema"]={}
+    collectionSchema["entitySetName"]=requestData['entitySetName']
+    collectionSchema["databaseType"]=databaseType
+    for attribute in requestData["attributes"].keys():
+        if(requestData['attributes'][attribute]["PK"]):
+            collectionSchema["primary_key"]=attribute
+        collectionSchema['schema'][attribute] = requestData['attributes'][attribute]['DataType']
+    schemas.insert_one(collectionSchema)

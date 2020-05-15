@@ -21,7 +21,7 @@ def viewAllEntities(username, databaseName, entitySetName):
     if dbExists(databaseName, storedDB):
         if collectionExists(db, entitySetName):
             eSet = db[entitySetName]
-            entities = eSet.find()
+            entities = eSet.find({},{'_id': False})
             results = []
             for entity in entities:
                 results.append(entity)
@@ -35,6 +35,7 @@ def viewAllEntities(username, databaseName, entitySetName):
 @mod.route('/databases/<databaseName>/<entitySetName>', methods=['POST'])
 @token_required
 def createEntity(username, databaseName, entitySetName):
+    
     storedDB=getDBName(username,databaseName)
     db = client[storedDB]
     if dbExists(databaseName, storedDB):
@@ -58,9 +59,13 @@ def updateEntityRecord(username, databaseName, entitySetName, primaryKey):
         if collectionExists(db, entitySetName):
             eSet = db[entitySetName]
             data = request.get_json()
-            if eSet.find_one({"_id": ObjectId(primaryKey)}):
+            client = pymongo.MongoClient()
+            apiConfig = client['api-config']
+            schemas=apiConfig['schemas']
+            primaryKey=schemas.find_one({'entitySetName':entitySetName},{'_id': False}).primary_key
+            if eSet.find_one({primary_key : primaryKey}):
                 eSet.find_one_and_update(
-                    {"_id": ObjectId(primaryKey)}, {"$set": data})
+                    {primary_key : primaryKey}, {"$set": data})
                 return jsonify({'code': 200, 'message': f"Entity updated successfully", "success": 1})
             else:
                 raise notFound('Entity does not exist.')

@@ -14,6 +14,7 @@ from bson.json_util import dumps, loads
 from ..util import *
 from ..util_mongodb import *
 
+
 @mod.route('/databases/<databaseName>', methods=['GET'])
 @token_required
 def viewEntitySets(username,databaseName):
@@ -29,7 +30,7 @@ def viewEntitySets(username,databaseName):
 @token_required
 def createEntitySet(username,databaseName):
     storedDB=getDBName(username,databaseName)
-    schemas=apiConfig['schemas']
+
     db = client[storedDB]
     requestData = request.get_json()
     entitySet = requestData['entitySetName']
@@ -38,14 +39,9 @@ def createEntitySet(username,databaseName):
             raise duplicateResource(
                 f"Entity Set '{entitySet}' already exists.")
         else:
-
             newES = db[entitySet]
-            collectionSchema = {'databaseName': storedDB}
+            addToSchema(requestData,"mongodb")
             try:
-                for entry in requestData["attributes"]:
-                    collectionSchema[entry] = requestData['attributes'][entry]
-                print(collectionSchema)
-                schemas.insert_one(collectionSchema)
                 newES.insert_one({'test': 'data'})
                 newES.delete_one({'test': 'data'})
                 return jsonify({'code': 200, 'message': f"Entity Set '{entitySet}' created successfully", "success": 1})
@@ -85,3 +81,11 @@ def deleteEntitySet(username,databaseName, entitySetName):
             raise notFound(f"Unknown entity set '{entitySetName}''")
     else:
         raise notFound(f"Unknown database {databaseName}.")
+
+@mod.route('/databases/<databaseName>/schema/<entitySetName>', methods=['GET'])
+def getSchema(databaseName,entitySetName):
+    client = pymongo.MongoClient()
+    apiConfig = client['api-config']
+    schemas=apiConfig['schemas']
+    outputSchema=schemas.find_one({'entitySetName':entitySetName,'databaseType':'mongodb'},{'_id': False})
+    return jsonify(outputSchema)
