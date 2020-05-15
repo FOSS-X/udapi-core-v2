@@ -53,17 +53,26 @@ def create_mysql_entities(username, databaseName, entitySetName):
     """ Create new entity for the entitySetName """
     password = get_password(username)
     entity = request.json['entity']
-    
+    values = list(entity.values())
+    keys = list(entity.keys())
+
     try:
         cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
         mycursor = cnx.cursor()
-        sql = "INSERT INTO " + entitySetName + " VALUES ('" 
-        print(entity.values())
-        values = list(entity.values())
+        # INSERT INTO `ataa_database1`.`a` (`id`, `studname`, `grade`) VALUES ('A', '4', 'ataw');
+        print(values)
+        print(keys)
+        sql = "INSERT INTO `" + username + "_" + databaseName + "`.`" + entitySetName + "` (`"
+        sql += str(keys[0])
+        for i in range(1, len(keys)):
+            sql += "`, `" + str(keys[i])
+        sql += "`) VALUES ('" 
+        print(entity)
         sql += str(values[0])
         for i in range(1, len(values)):
             sql += "', '" + str(values[i])
         sql += "');"
+        print(sql)
         mycursor.execute(sql)
         cnx.commit()
         cnx.close()
