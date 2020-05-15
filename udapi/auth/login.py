@@ -49,7 +49,7 @@ def login():
         return jsonify(success=0, error_code=401, message="User doesn't exists.")
 
     if check_password_hash(data[0]['password'], password):
-        token = jwt.encode({'username' : username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=200)}, SECRET_KEY)
-        return jsonify({'jwtToken' : token.decode('UTF-8')})
+        token = jwt.encode({'username' : username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=500)}, SECRET_KEY)
+        return jsonify(success=1, jwtToken=token.decode('UTF-8'))
 
     return jsonify(success=0, error_code=401, message="Invalid password."), 401
