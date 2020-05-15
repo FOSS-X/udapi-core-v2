@@ -84,7 +84,7 @@ def delete_mysql_db(username, databaseName):
         sql = "DROP DATABASE " + username + "_" + databaseName + ";"
         mycursor.execute(sql)
         cnx.close()
-        update_configs_remove(username, databaseName)
+        update_configs_remove(username, 'mysql', databaseName)
         return jsonify(success=1, message="Database: " + databaseName + " deleted successfully.")
 
     except mysql.connector.Error as err:
