@@ -11,7 +11,8 @@ from flask import Flask
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'FOSS-X-udapi'
-app.config.from_pyfile('config.py')
+# app.config.from_pyfile('config.py')
+app.config.from_object('udapi.config.Config')
 
 from udapi.auth.register import mod
 from udapi.auth.login import mod
