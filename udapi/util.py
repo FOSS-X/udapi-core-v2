@@ -155,7 +155,7 @@ def update_configs_add(username, databaseName, databaseType):
         return jsonify(success=0, error_code=err.errno, message=err.msg)
 
 
-def update_configs_remove(username, databaseName):
+def update_configs_remove(username, databaseType, databaseName):
     """ Update the configs table in udapiDB for the deleted database by the user. """
     try:
         cnx = mysql.connector.connect(
@@ -164,7 +164,7 @@ def update_configs_remove(username, databaseName):
             passwd="password"
         )
         mycursor = cnx.cursor()
-        sql = "DELETE FROM `udapiDB`.`configs` WHERE (`username` = '" + username + "') and (`databaseName` = '" + databaseName +"');"
+        sql = "DELETE FROM `udapiDB`.`configs` WHERE (`username` = '" + username + "') and (`databaseName` = '" + databaseName +"') and (`databaseType` = '" + databaseType +"');"
         mycursor.execute(sql)
         cnx.commit()
         cnx.close()
