@@ -76,7 +76,7 @@ def deleteEntitySet(username,databaseName, entitySetName):
     if dbExists(databaseName, storedDB):
         if collectionExists(db, entitySetName):
             db.drop_collection(entitySetName)
-            removeFromConfig(username,databaseName,storedDB)
+            # removeFromConfig(username,databaseName,storedDB)
             return jsonify({'code': 200, 'message': f"Entity Set '{entitySetName}' deleted successfully", "success": 1})
         else:
             raise notFound(f"Unknown entity set '{entitySetName}''")
