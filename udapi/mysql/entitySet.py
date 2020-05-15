@@ -95,6 +95,7 @@ def rename_mysql_entitySet(username, databaseName, entitySetName):
         sql = "ALTER TABLE " + entitySetName + " RENAME " + newEntitySetName + ";"
         mycursor.execute(sql)
         cnx.close()
+        updateSchema(entitySetName,newEntitySetName,"mysql")
         return jsonify(success=1, message="Table Name Altered")
 
     except mysql.connector.Error as err:
@@ -112,6 +113,7 @@ def delete_mysql_entitySetName(username, databaseName, entitySetName):
         sql = "DROP TABLE " + entitySetName + ";"
         mycursor.execute(sql)
         cnx.close()
+        removeFromSchema(entitySetName,"mysql")
         return jsonify(success=1, message="Table " + entitySetName + " deleted.")
 
     except mysql.connector.Error as err:

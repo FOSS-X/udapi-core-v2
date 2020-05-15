@@ -59,8 +59,9 @@ def updateEntitySetName(username,databaseName,entitySetName):
     eSet = db[entitySetName]
     if dbExists(databaseName, storedDB):
         if collectionExists(db, entitySetName):
-            newDbName = request.json['newEntitySetName']
-            eSet.rename(newDbName)
+            newESName = request.json['newEntitySetName']
+            updateSchema(entitySetName,newESName,"mongodb")
+            eSet.rename(newESName)
             return jsonify({'code': 200, 'message': f"Entity Set altered", "success": 1})
         else:
             raise notFound(f"Unknown entity set '{entitySetName}''")
@@ -76,7 +77,7 @@ def deleteEntitySet(username,databaseName, entitySetName):
     if dbExists(databaseName, storedDB):
         if collectionExists(db, entitySetName):
             db.drop_collection(entitySetName)
-            # removeFromConfig(username,databaseName,storedDB)
+            removeFromSchema(entitySetName,"mongodb")
             return jsonify({'code': 200, 'message': f"Entity Set '{entitySetName}' deleted successfully", "success": 1})
         else:
             raise notFound(f"Unknown entity set '{entitySetName}''")

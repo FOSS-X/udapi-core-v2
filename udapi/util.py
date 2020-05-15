@@ -187,3 +187,15 @@ def addToSchema(requestData,databaseType):
             collectionSchema["primary_key"]=attribute
         collectionSchema['schema'][attribute] = requestData['attributes'][attribute]['DataType']
     schemas.insert_one(collectionSchema)
+
+def removeFromSchema(entitySetName,databaseType):
+    client = pymongo.MongoClient()
+    apiConfig = client['api-config']
+    schemas=apiConfig['schemas']
+    schemas.find_one_and_delete({"entitySetName":entitySetName,"databaseType":databaseType})
+
+def updateSchema(entitySetName, newEntitySetName, databaseType):
+    client = pymongo.MongoClient()
+    apiConfig = client['api-config']
+    schemas=apiConfig['schemas']
+    schemas.find_one_and_update({"entitySetName":entitySetName,"databaseType":databaseType},{"$set": {"entitySetName":newEntitySetName}})
