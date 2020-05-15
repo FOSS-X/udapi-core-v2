@@ -51,7 +51,7 @@ def create_mysql_db(username):
 
     try:
         cnx = connectSQLServerDB(username, password, username + "_" + databaseName)
-        return jsonify(success=0, message="database Already Exists", error_code=401)
+        return jsonify(success=0, message="Database already exists.", error_code=401)
 
     except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_DB_ERROR:
