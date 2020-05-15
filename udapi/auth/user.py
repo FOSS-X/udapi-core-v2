@@ -27,8 +27,27 @@ mod = Blueprint('user', __name__)
 client = pymongo.MongoClient()
 apiConfig = client['api-config']
 
-
 @mod.route('/user', methods=['GET'])
+@token_required
+def get_user(username):
+    try:
+        cnx = connectSQLServer('root', 'password')
+        mycursor = cnx.cursor()
+        sql = "SELECT admin, username, email FROM udapiDB.users WHERE username='" + username + "';"
+        users = get_entities(mycursor, sql)
+        cnx.close()
+        return jsonify(success=1, users=users)
+
+    except mysql.connector.Error as err:
+        return jsonify(success=0, error_code=err.errno, message=err.msg), 401
+
+
+@mod.route('/verifyuser', methods=['GET'])
+@token_required
+def verify_user(username):
+    return jsonify(success=1, verified=1)
+
+@mod.route('/users', methods=['GET'])
 @admin
 def get_users(username):
     try:
