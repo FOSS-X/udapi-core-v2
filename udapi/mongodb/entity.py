@@ -42,7 +42,7 @@ def createEntity(username, databaseName, entitySetName):
         if collectionExists(db, entitySetName):
             eSet = db[entitySetName]
             data = request.get_json()
-            eSet.insert_one(data)
+            eSet.insert_one(data['entity'])
             return jsonify({'code': 200, 'message': f"Entity created successfully", "success": 1})
         else:
             raise notFound(f"Unknown entity set '{entitySetName}''")
