@@ -82,10 +82,10 @@ def deleteEntityRecord(username, databaseName, entitySetName, primaryKey):
     db = client[storedDB]
     if dbExists(databaseName, storedDB):
         if collectionExists(db, entitySetName):
-            eSet = db[entitySetName]
-            if eSet.find_one({"_id": ObjectId(primaryKey)}):
-                eSet.find_one_and_delete(
-                    {"_id": ObjectId(primaryKey)})
+            primaryKey=schemas.find_one({'entitySetName':entitySetName},{'_id': False}).primary_key
+            if eSet.find_one({primary_key : primaryKey}):
+                eSet.find_one_and_update(
+                    {primary_key : primaryKey}, {"$set": data})
                 return jsonify({'code': 200, 'message': f"Entity deleted successfully", "success": 1})
             else:
                 raise notFound('Entity does not exist.')
