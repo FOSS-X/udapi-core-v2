@@ -64,7 +64,7 @@ def register():
 
     # Check if passwords are equal
     if password != confirm_password:
-        return jsonify(success=0, error_code=7002, message="Password and Confirm Password doesn't match."), 401
+        return jsonify(success=0, error_code=7002, message="Password and Confirm Password doesn't match"), 401
 
     # Inserting user data in the user table of udapi DB
     try:
