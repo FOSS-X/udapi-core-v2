@@ -35,5 +35,5 @@ def handle_unexpected_error(e):
     msg = "UnexpectedError: " + str(e)
     log.exception(f"{bcolors.FAIL}{msg}{bcolors.WARNING}")
     print(f"{bcolors.ENDC}")
-    return jsonify(success=0, error_code=500, message="An unexpected error has occurred: " + str(e)), 500
+    return jsonify(success=0, error_code=500, message="Unexpected Error: Contact FOSS-X Team."), 500
 
