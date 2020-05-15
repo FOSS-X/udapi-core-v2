@@ -37,7 +37,7 @@ def get_mysql_entitySets(username, databaseName):
         tables = [table[0] for table in mycursor]
 
         cnx.close()
-        return jsonify(success=1, message=tables)
+        return jsonify(success=1, entitySets=tables)
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
@@ -75,7 +75,7 @@ def create_mysql_entitySet(username, databaseName):
         mycursor = cnx.cursor()
         mycursor.execute(sql)
         cnx.close()
-        return jsonify(success=1, message="Table Created")
+        return jsonify(success=1, message="Entity Set '" + entitySetName + "' created successfully")
 
     except mysql.connector.Error as err:
         return jsonify(success=0, error_code=err.errno, message=err.msg)
